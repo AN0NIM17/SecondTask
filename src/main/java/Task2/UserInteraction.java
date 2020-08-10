@@ -5,7 +5,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class UserInteraction {
+	private static Logger logger = LogManager.getLogger(UserInteraction.class);
 	public static User getUser(String id) throws SQLException {
 		Connection myConnection = DbConnection.getConnection();
 		Statement myStatement = myConnection.createStatement();
@@ -18,8 +22,7 @@ public class UserInteraction {
 			myStatement.close();
 
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(e.toString());
 		}
 		DbConnection.closeConnection();
 		return user;
@@ -35,8 +38,7 @@ public class UserInteraction {
 			myStatement.close();
 
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(e.toString());
 		}
 		DbConnection.closeConnection();
 		return myResultSet;
@@ -52,8 +54,7 @@ public class UserInteraction {
 			myStatement.close();
 
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(e.toString());
 		}
 		DbConnection.closeConnection();
 
@@ -68,8 +69,7 @@ public class UserInteraction {
 			myStatement.close();
 
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(e.toString());
 		}
 		DbConnection.closeConnection();
 

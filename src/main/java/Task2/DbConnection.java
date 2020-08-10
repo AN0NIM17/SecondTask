@@ -2,11 +2,13 @@ package Task2;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class DbConnection {
+	private static Logger logger = LogManager.getLogger(DbConnection.class);
 	private static Connection myConnection = null;
 
 	public static Connection getConnection() {
@@ -20,8 +22,7 @@ public class DbConnection {
 		} catch (SQLException ex) {
 			System.out.println(ex.getMessage());
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(e.toString());
 		}
 
 		return myConnection;
@@ -31,8 +32,8 @@ public class DbConnection {
 		try {
 			if (myConnection != null)
 				myConnection.close();
-		} catch (SQLException ex) {
-			System.out.println(ex.getMessage());
+		} catch (SQLException e) {
+			logger.error(e.toString());
 		}
 	}
 

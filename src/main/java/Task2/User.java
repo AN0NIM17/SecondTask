@@ -1,5 +1,6 @@
 package Task2;
 
+
 public class User {
 	private String firstname;
 	private String middlename;

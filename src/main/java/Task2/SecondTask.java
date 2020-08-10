@@ -6,12 +6,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.Connection;
 import java.sql.SQLException;
 
 /**
@@ -19,6 +20,7 @@ import java.sql.SQLException;
  */
 @WebServlet("/SecondTask")
 public class SecondTask extends HttpServlet {
+	private static Logger logger = LogManager.getLogger(SecondTask.class);
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -34,14 +36,12 @@ public class SecondTask extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-
 		User user = null;
 		String id = request.getParameter("id");
 		try {
 			user = UserInteraction.getUser(id);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(e.toString());
 		}
 		JSONObject jsonObject = new JSONObject(user);
 		String myJson = jsonObject.toString();
@@ -57,22 +57,21 @@ public class SecondTask extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		StringBuilder buffer = new StringBuilder();
-	    BufferedReader reader = request.getReader();
-	    String line;
-	    while ((line = reader.readLine()) != null) {
-	        buffer.append(line);
-	    }
-	    String data = buffer.toString();
-	    JSONObject jsonObject = new JSONObject(data);
-	    String firstname = jsonObject.getString("firstname");
+		BufferedReader reader = request.getReader();
+		String line;
+		while ((line = reader.readLine()) != null) {
+			buffer.append(line);
+		}
+		String data = buffer.toString();
+		JSONObject jsonObject = new JSONObject(data);
+		String firstname = jsonObject.getString("firstname");
 		String middlename = jsonObject.getString("middlename");
 		String lastname = jsonObject.getString("lastname");
 		User user = new User(firstname, middlename, lastname);
 		try {
 			UserInteraction.createUser(user);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(e.toString());
 		}
 
 	}
@@ -84,22 +83,21 @@ public class SecondTask extends HttpServlet {
 			throws ServletException, IOException {
 		String id = request.getParameter("id");
 		StringBuilder buffer = new StringBuilder();
-	    BufferedReader reader = request.getReader();
-	    String line;
-	    while ((line = reader.readLine()) != null) {
-	        buffer.append(line);
-	    }
-	    String data = buffer.toString();
-	    JSONObject jsonObject = new JSONObject(data);
-	    String firstname = jsonObject.getString("firstname");
+		BufferedReader reader = request.getReader();
+		String line;
+		while ((line = reader.readLine()) != null) {
+			buffer.append(line);
+		}
+		String data = buffer.toString();
+		JSONObject jsonObject = new JSONObject(data);
+		String firstname = jsonObject.getString("firstname");
 		String middlename = jsonObject.getString("middlename");
 		String lastname = jsonObject.getString("lastname");
 		User user = new User(firstname, middlename, lastname);
 		try {
 			UserInteraction.updateUser(user, id);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(e.toString());
 		}
 	}
 
@@ -112,8 +110,7 @@ public class SecondTask extends HttpServlet {
 		try {
 			UserInteraction.deleteUser(id);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(e.toString());
 		}
 	}
 
