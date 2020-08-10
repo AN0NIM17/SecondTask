@@ -5,18 +5,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import org.json.JSONObject;
-
 public class UserInteraction {
-	public static JSONObject getUser(String id) throws SQLException {
+	public static User getUser(String id) throws SQLException {
 		Connection myConnection = DbConnection.getConnection();
 		Statement myStatement = myConnection.createStatement();
 		ResultSet myResultSet = myStatement.executeQuery("SELECT * FROM user WHERE `id` =" + id);
 		myResultSet.next();
-		JSONObject obj = new JSONObject();
-		obj.put("firstname", myResultSet.getString("firstname"));
-		obj.put("middlename", myResultSet.getString("middlename"));
-		obj.put("lastname", myResultSet.getString("lastname"));
+		
+		User user = new User(myResultSet.getString("firstname"), myResultSet.getString("middlename"), myResultSet.getString("lastname"));
 		try {
 			myResultSet.close();
 			myStatement.close();
@@ -26,14 +22,15 @@ public class UserInteraction {
 			e.printStackTrace();
 		}
 		DbConnection.closeConnection();
-		return obj;
+		return user;
 	}
 
-	public static boolean createUser(String firstname, String middlename, String lastname) throws SQLException {
+	public static boolean createUser(User user) throws SQLException {
 		Connection myConnection = DbConnection.getConnection();
 		Statement myStatement = myConnection.createStatement();
 		boolean myResultSet = myStatement.execute("INSERT INTO user (firstname, middlename, lastname) VALUES ('"
-				+ firstname + "', '" + middlename + "', '" + lastname + "');");
+				+ user.getFirstname() + "', '" + user.getMiddlename() + "', '" + user.getLastname() + "');");
+		
 		try {
 			myStatement.close();
 
@@ -45,12 +42,12 @@ public class UserInteraction {
 		return myResultSet;
 	}
 
-	public static boolean updateUser(String firstname, String middlename, String lastname, String id)
+	public static boolean updateUser(User user, String id)
 			throws SQLException {
 		Connection myConnection = DbConnection.getConnection();
 		Statement myStatement = myConnection.createStatement();
-		boolean myResultSet = myStatement.execute("UPDATE user SET firstname = '" + firstname + "', middlename = '"
-				+ middlename + "', lastname = '" + lastname + "' WHERE `id` = " + id + ";");
+		boolean myResultSet = myStatement.execute("UPDATE user SET firstname = '" + user.getFirstname() + "', middlename = '"
+				+ user.getMiddlename() + "', lastname = '" + user.getLastname() + "' WHERE `id` = " + id + ";");
 		try {
 			myStatement.close();
 

@@ -35,7 +35,7 @@ public class SecondTask extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
-		JSONObject user = null;
+		User user = null;
 		String id = request.getParameter("id");
 		try {
 			user = UserInteraction.getUser(id);
@@ -43,10 +43,11 @@ public class SecondTask extends HttpServlet {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+		JSONObject jsonObject = new JSONObject(user);
+		String myJson = jsonObject.toString();
 		response.setContentType("application/json");
 		PrintWriter printWriter = response.getWriter();
-		printWriter.println(user.toString());
+		printWriter.println(myJson.toString());
 	}
 
 	/**
@@ -66,8 +67,9 @@ public class SecondTask extends HttpServlet {
 	    String firstname = jsonObject.getString("firstname");
 		String middlename = jsonObject.getString("middlename");
 		String lastname = jsonObject.getString("lastname");
+		User user = new User(firstname, middlename, lastname);
 		try {
-			UserInteraction.createUser(firstname, middlename, lastname);
+			UserInteraction.createUser(user);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -92,8 +94,9 @@ public class SecondTask extends HttpServlet {
 	    String firstname = jsonObject.getString("firstname");
 		String middlename = jsonObject.getString("middlename");
 		String lastname = jsonObject.getString("lastname");
+		User user = new User(firstname, middlename, lastname);
 		try {
-			UserInteraction.updateUser(firstname, middlename, lastname, id);
+			UserInteraction.updateUser(user, id);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
