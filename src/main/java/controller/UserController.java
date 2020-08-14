@@ -1,4 +1,4 @@
-package Task2;
+package controller;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -8,7 +8,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.json.JSONObject;
+
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import entity.User;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -18,15 +21,15 @@ import java.sql.SQLException;
 /**
  * Servlet implementation class SecondTask
  */
-@WebServlet("/SecondTask")
-public class SecondTask extends HttpServlet {
-	private static Logger logger = LogManager.getLogger(SecondTask.class);
+@WebServlet("/user")
+public class UserController extends HttpServlet {
+	private static Logger logger = LogManager.getLogger(UserController.class);
 	private static final long serialVersionUID = 1L;
 
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
-	public SecondTask() {
+	public UserController() {
 		super();
 	}
 
@@ -43,11 +46,10 @@ public class SecondTask extends HttpServlet {
 		} catch (SQLException e) {
 			logger.error(e.toString());
 		}
-		JSONObject jsonObject = new JSONObject(user);
-		String myJson = jsonObject.toString();
+		String userData = new ObjectMapper().writeValueAsString(user);
 		response.setContentType("application/json");
 		PrintWriter printWriter = response.getWriter();
-		printWriter.println(myJson.toString());
+		printWriter.println(userData);
 	}
 
 	/**
@@ -56,6 +58,8 @@ public class SecondTask extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		PrintWriter printWriter = response.getWriter();
+		response.setContentType("text/html");
 		StringBuilder buffer = new StringBuilder();
 		BufferedReader reader = request.getReader();
 		String line;
@@ -63,17 +67,18 @@ public class SecondTask extends HttpServlet {
 			buffer.append(line);
 		}
 		String data = buffer.toString();
-		JSONObject jsonObject = new JSONObject(data);
-		String firstname = jsonObject.getString("firstname");
-		String middlename = jsonObject.getString("middlename");
-		String lastname = jsonObject.getString("lastname");
-		User user = new User(firstname, middlename, lastname);
+		User user = new ObjectMapper().readValue(data, User.class);
+
+
 		try {
-			UserInteraction.createUser(user);
+			long id = UserInteraction.createUser(user);
+			printWriter.println(id);
+
 		} catch (SQLException e) {
 			logger.error(e.toString());
+			
 		}
-
+		
 	}
 
 	/**
@@ -89,11 +94,7 @@ public class SecondTask extends HttpServlet {
 			buffer.append(line);
 		}
 		String data = buffer.toString();
-		JSONObject jsonObject = new JSONObject(data);
-		String firstname = jsonObject.getString("firstname");
-		String middlename = jsonObject.getString("middlename");
-		String lastname = jsonObject.getString("lastname");
-		User user = new User(firstname, middlename, lastname);
+		User user = new ObjectMapper().readValue(data, User.class);
 		try {
 			UserInteraction.updateUser(user, id);
 		} catch (SQLException e) {

@@ -1,4 +1,4 @@
-package Task2;
+package controller;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -10,15 +10,21 @@ import org.apache.logging.log4j.Logger;
 public class DbConnection {
 	private static Logger logger = LogManager.getLogger(DbConnection.class);
 	private static Connection myConnection = null;
+	
+	private static String dbUrl = "jdbc:mysql://localhost:3306/user";
+	private static String user = "root";
+	private static String password = "123";
+	
+	public DbConnection(String dbUrl, String user, String password) {
+		DbConnection.dbUrl = dbUrl;
+		DbConnection.user = user;
+		DbConnection.password = password;
+	}
 
 	public static Connection getConnection() {
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
-			String bdUrl = "jdbc:mysql://localhost:3306/user";
-			String user = "root";
-			String password = "123";
-
-			myConnection = DriverManager.getConnection(bdUrl, user, password);
+			myConnection = DriverManager.getConnection(dbUrl, user, password);
 		} catch (SQLException ex) {
 			System.out.println(ex.getMessage());
 		} catch (ClassNotFoundException e) {

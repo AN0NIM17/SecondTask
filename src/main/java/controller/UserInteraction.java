@@ -1,12 +1,15 @@
-package Task2;
+package controller;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import entity.User;
 
 public class UserInteraction {
 	private static Logger logger = LogManager.getLogger(UserInteraction.class);
@@ -23,25 +26,35 @@ public class UserInteraction {
 
 		} catch (SQLException e) {
 			logger.error(e.toString());
+			throw e;
 		}
 		DbConnection.closeConnection();
+		
 		return user;
 	}
 
-	public static boolean createUser(User user) throws SQLException {
+	public static long createUser(User user) throws SQLException {
+		System.out.print("f");
 		Connection myConnection = DbConnection.getConnection();
-		Statement myStatement = myConnection.createStatement();
-		boolean myResultSet = myStatement.execute("INSERT INTO user (firstname, middlename, lastname) VALUES ('"
-				+ user.getFirstname() + "', '" + user.getMiddlename() + "', '" + user.getLastname() + "');");
-		
+		String SQL_INSERT = "INSERT INTO user (firstname, middlename, lastname) VALUES(?, ?, ?);";
+		PreparedStatement myStatement = myConnection.prepareStatement(SQL_INSERT, Statement.RETURN_GENERATED_KEYS);
+		myStatement.setString(1, user.getFirstname());
+		myStatement.setString(2, user.getMiddlename());
+		myStatement.setString(3, user.getLastname());
+		myStatement.execute();
+		ResultSet myResultSet = myStatement.getGeneratedKeys();
+		myResultSet.next();
+		long id = myResultSet.getLong(1);		
 		try {
 			myStatement.close();
 
 		} catch (SQLException e) {
 			logger.error(e.toString());
+			throw e;
 		}
 		DbConnection.closeConnection();
-		return myResultSet;
+		
+		return id;
 	}
 
 	public static boolean updateUser(User user, String id)
@@ -55,6 +68,7 @@ public class UserInteraction {
 
 		} catch (SQLException e) {
 			logger.error(e.toString());
+			throw e;
 		}
 		DbConnection.closeConnection();
 
@@ -70,6 +84,7 @@ public class UserInteraction {
 
 		} catch (SQLException e) {
 			logger.error(e.toString());
+			throw e;
 		}
 		DbConnection.closeConnection();
 
