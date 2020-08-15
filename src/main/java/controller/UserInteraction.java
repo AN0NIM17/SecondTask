@@ -34,7 +34,6 @@ public class UserInteraction {
 	}
 
 	public static long createUser(User user) throws SQLException {
-		System.out.print("f");
 		Connection myConnection = DbConnection.getConnection();
 		String SQL_INSERT = "INSERT INTO user (firstname, middlename, lastname) VALUES(?, ?, ?);";
 		PreparedStatement myStatement = myConnection.prepareStatement(SQL_INSERT, Statement.RETURN_GENERATED_KEYS);
