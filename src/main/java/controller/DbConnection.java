@@ -8,25 +8,25 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class DbConnection {
-	private static Logger logger = LogManager.getLogger(DbConnection.class);
-	private static Connection myConnection = null;
-	
-	private static String dbUrl = "jdbc:mysql://localhost:3306/user";
-	private static String user = "root";
-	private static String password = "123";
-	
+	private Logger logger = LogManager.getLogger(DbConnection.class);
+	private Connection myConnection = null;
+
+	private String dbUrl;
+	private String user;
+	private String password;
+
 	public DbConnection(String dbUrl, String user, String password) {
-		DbConnection.dbUrl = dbUrl;
-		DbConnection.user = user;
-		DbConnection.password = password;
+		this.dbUrl = dbUrl;
+		this.user = user;
+		this.password = password;
 	}
 
-	public static Connection getConnection() {
+	public Connection getConnection() {
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 			myConnection = DriverManager.getConnection(dbUrl, user, password);
 		} catch (SQLException ex) {
-			System.out.println(ex.getMessage());
+			logger.error(ex.getMessage());
 		} catch (ClassNotFoundException e) {
 			logger.error(e.toString());
 		}
@@ -34,7 +34,7 @@ public class DbConnection {
 		return myConnection;
 	}
 
-	public static void closeConnection() {
+	public void closeConnection() {
 		try {
 			if (myConnection != null)
 				myConnection.close();
