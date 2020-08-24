@@ -21,25 +21,32 @@ public class DbConnection {
 		this.password = password;
 	}
 
-	public Connection getConnection() {
+	public Connection getConnection() throws SQLException, ClassNotFoundException {
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 			myConnection = DriverManager.getConnection(dbUrl, user, password);
 		} catch (SQLException ex) {
 			logger.error(ex.getMessage());
+			throw ex;
 		} catch (ClassNotFoundException e) {
 			logger.error(e.toString());
+			throw e;
+		} catch (RuntimeException e) {
+			logger.error(e.toString());
+			throw e;
 		}
 
 		return myConnection;
 	}
 
-	public void closeConnection() {
+	public void closeConnection() throws SQLException {
 		try {
-			if (myConnection != null)
+			if (myConnection != null) {
 				myConnection.close();
+			}
 		} catch (SQLException e) {
 			logger.error(e.toString());
+			throw e;
 		}
 	}
 
