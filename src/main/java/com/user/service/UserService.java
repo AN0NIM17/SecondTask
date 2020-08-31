@@ -1,8 +1,9 @@
-package controller;
+package com.user.service;
 
 import java.sql.SQLException;
 
-import entity.User;
+import com.user.db.entity.User;
+import com.user.db.repository.UserRepository;
 
 public class UserService {
 

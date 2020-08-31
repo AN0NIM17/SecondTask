@@ -1,4 +1,4 @@
-package controller;
+package com.user.api.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -15,8 +15,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import entity.User;
+import com.user.api.dto.UserDto;
+import com.user.api.transformer.UserDtoTransformer;
+import com.user.db.entity.User;
+import com.user.service.UserService;
 
 @WebServlet("/user")
 public class UserController extends HttpServlet {
@@ -47,7 +49,7 @@ public class UserController extends HttpServlet {
 		PrintWriter printWriter = response.getWriter();
 		response.setContentType("text/html");
 		Reader data = request.getReader();
-		User user = mapper.readValue(data, User.class);
+		User user = UserDtoTransformer.transform(mapper.readValue(data, UserDto.class));
 		try {
 			printWriter.println(userService.create(user));
 		} catch (SQLException e) {
@@ -61,7 +63,8 @@ public class UserController extends HttpServlet {
 			throws ServletException, IOException {
 		String id = request.getParameter("id");
 		Reader data = request.getReader();
-		User user = new ObjectMapper().readValue(data, User.class);
+		UserDto userDto = new ObjectMapper().readValue(data, UserDto.class);
+		User user = UserDtoTransformer.transform(userDto);
 		try {
 			userService.update(id, user);
 		} catch (SQLException e) {

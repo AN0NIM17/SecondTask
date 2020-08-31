@@ -1,14 +1,14 @@
-package entity;
+package com.user.db.entity;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@AllArgsConstructor
-@Setter
-@Getter
+@Data
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class User {
 
 	private String firstname;
