@@ -22,67 +22,65 @@ import com.user.service.UserService;
 
 @WebServlet("/user")
 public class UserController extends HttpServlet {
-
 	private static final long serialVersionUID = 1L;
 	private final Logger logger = LogManager.getLogger(UserController.class);
 	private final ObjectMapper mapper = new ObjectMapper();
 	private final UserService userService = new UserService();
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		User user = null;
+	        throws ServletException, IOException {
 		String id = request.getParameter("id");
 		try {
-			user = userService.get(id);
-		} catch (SQLException e) {
-			logger.error(e.toString());
-		} catch (ClassNotFoundException e) {
-			logger.error(e.toString());
+			User user = userService.get(id);
+			response.setStatus(200);
+			String userData = mapper.writeValueAsString(user);
+			response.setContentType("application/json");
+			response.getWriter().println(userData);
+		} catch (SQLException | ClassNotFoundException e) {
+			logger.error(e.getMessage());
+			response.setStatus(404);
 		}
-		String userData = mapper.writeValueAsString(user);
-		response.setContentType("application/json");
-		response.getWriter().println(userData);
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	        throws ServletException, IOException {
 		PrintWriter printWriter = response.getWriter();
-		response.setContentType("text/html");
-		Reader data = request.getReader();
-		User user = UserDtoTransformer.transform(mapper.readValue(data, UserDto.class));
+		response.setContentType("application/json");
+		Reader dataReader = request.getReader();
+		User user = UserDtoTransformer.transform(mapper.readValue(dataReader, UserDto.class));
 		try {
 			printWriter.println(userService.create(user));
-		} catch (SQLException e) {
-			logger.error(e.toString());
-		} catch (ClassNotFoundException e) {
-			logger.error(e.toString());
+			response.setStatus(201);
+		} catch (SQLException | ClassNotFoundException e) {
+			logger.error(e.getMessage());
+			response.setStatus(404);
 		}
 	}
 
 	protected void doPut(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	        throws ServletException, IOException {
 		String id = request.getParameter("id");
 		Reader data = request.getReader();
-		UserDto userDto = new ObjectMapper().readValue(data, UserDto.class);
+		UserDto userDto = mapper.readValue(data, UserDto.class);
 		User user = UserDtoTransformer.transform(userDto);
 		try {
 			userService.update(id, user);
-		} catch (SQLException e) {
-			logger.error(e.toString());
-		} catch (ClassNotFoundException e) {
-			logger.error(e.toString());
+			response.setStatus(200);
+		} catch (SQLException | ClassNotFoundException e) {
+			logger.error(e.getMessage());
+			response.setStatus(404);
 		}
 	}
 
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	        throws ServletException, IOException {
 		String id = request.getParameter("id");
 		try {
 			userService.delete(id);
-		} catch (SQLException e) {
-			logger.error(e.toString());
-		} catch (ClassNotFoundException e) {
-			logger.error(e.toString());
+			response.setStatus(200);
+		} catch (SQLException | ClassNotFoundException e) {
+			logger.error(e.getMessage());
+			response.setStatus(404);
 		}
 	}
 }

@@ -6,22 +6,21 @@ import com.user.db.entity.User;
 import com.user.db.repository.UserRepository;
 
 public class UserService {
-
 	private UserRepository userRepository = new UserRepository();
 
 	public User get(String id) throws SQLException, ClassNotFoundException {
-		return userRepository.getUser(id);
+		return userRepository.get(id);
 	}
 	
-	public Long create(User user) throws SQLException, ClassNotFoundException {
-		return userRepository.createUser(user);
+	public User create(User user) throws SQLException, ClassNotFoundException {
+		return userRepository.create(user);
 	}
 	
 	public void update(String id, User user) throws SQLException, ClassNotFoundException {
-		userRepository.updateUser(user, id);
+		userRepository.update(user, id);
 	}
 	
 	public void delete(String id) throws SQLException, ClassNotFoundException {
-		userRepository.deleteUser(id);
+		userRepository.delete(id);
 	}
 }
